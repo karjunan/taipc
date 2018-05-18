@@ -1,5 +1,12 @@
 package com.softvision.taipc.entities;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -9,11 +16,21 @@ import java.util.Objects;
 public class Recruiter {
 
     @Id
+    @Min(value=0,message="Recruiter Id cannot be null or empty")
     private String id;
 
+    @NotNull(message = "Recruiter First Name cannot be null")
+    @NotEmpty(message="Recruiter First Name cannot empty")
+    @Size(min = 2, max = 100, message = "Recruiter First Name must be atleast 2 and 100 characters")
     private String firstName;
+    
+    @NotNull(message = "Recruiter Last Name cannot be null")
     private String lastName;
+    
+    @Email(message = "Recruiter Email should be valid")
     private String mailID;
+    
+    @Pattern(regexp="(^$|[0-9]{10})",message="Invalid Phone number")
     private String phoneNumber;
 
     public Recruiter() {

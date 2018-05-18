@@ -3,13 +3,30 @@ package com.softvision.taipc.entities;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
+import org.springframework.data.annotation.Id;
+
 public class State {
 
+	@Id
+	@Min(value=0,message="Candidate Id cannot be null or empty")
     private String id;
+	
+	@NotNull(message = "status cannot be null")
     private Status status;
+	
+	@NotNull(message="Created Date cycle")
     private LocalDateTime createdDate;
+	
+	@NotNull(message="Modified Date cycle")
     private LocalDateTime modifiedDate;
+	
+	@NotNull(message = "status cannot be null")
     private String createdBy;
+    
+	@NotNull(message = "status cannot be null")
     private String modifiedBy;
 
     public State() {
