@@ -1,20 +1,41 @@
 package com.softvision.taipc.entities;
 
+import java.time.LocalDateTime;
+import java.util.Objects;
+
+import javax.persistence.Convert;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDateTime;
-import java.util.Objects;
+import com.softvision.taipc.helper.LocalDateTimeAttributeConverter;
 
 @Document(collection = "event")
 public class Event {
 
     @Id
+    @Min(value=0,message="Event ID cannot be null or empty")
     private String id;
+    
+    @NotNull(message = "Event Key cannot be null")
+    @NotEmpty(message="Event Key cannot empty")
     private String eventkey;
+    
+    @NotNull(message = "Event value cannot be null")
+    @NotEmpty(message="Event value cannot empty")
     private String eventValue;
+    
+    @NotNull(message = "Created by value cannot be null")
+    @NotEmpty(message="Created by value cannot empty")
     private String createdBy;
+    
+    @Convert(converter = LocalDateTimeAttributeConverter.class)
     private LocalDateTime creationTime;
+    
+    @Convert(converter = LocalDateTimeAttributeConverter.class)
     private LocalDateTime modifiedTime;
 
 
