@@ -3,6 +3,8 @@ package com.softvision.taipc.controller;
 import com.softvision.taipc.entities.Candidate;
 import com.softvision.taipc.helper.Loggable;
 import com.softvision.taipc.service.CandidateService;
+import com.softvision.taipc.validation.ValidationUtil;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,6 +52,7 @@ public class CandidateController {
     public void addCandidate(@Suspended AsyncResponse asyncResponse,
                              Candidate candidate) {
 
+    	ValidationUtil.validate(candidate);
         candidateService.addCandidate(candidate);
         asyncResponse.resume("Candidate Added");
     }

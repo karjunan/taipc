@@ -7,16 +7,36 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
 
 @Document(collection = "candidate")
 public class Candidate {
 
+
     @Id
+    @Min(value=0,message="Candidate Id cannot be null or empty")
     private String id;
+    
+    @NotNull(message = "Candidate First Name cannot be null")
+    @NotEmpty(message="Candidate First Name cannot empty")
+    @Size(min = 2, max = 100, message = "Candidate First Name must be atleast 2 and 100 characters")
     private String firstName;
+    
+    @NotNull(message = "Candidate Last Name cannot be null")
     private String lastName;
+    
+    @Email(message = "Candidate Email should be valid")
     private String mailID;
+    
+    @Pattern(regexp="(^$|[0-9]{10})",message="Invalid Phone number")
     private String phoneNumber;
+
     private Recruiter recruiter;
     private List<Panel> panelList;
     private List<Panel> backupPanelList;
