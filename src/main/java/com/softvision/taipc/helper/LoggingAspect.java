@@ -21,7 +21,7 @@ public class LoggingAspect {
     public Object logTime(ProceedingJoinPoint jp) throws Throwable {
         Instant now = Instant.now();
         Object object =  jp.proceed();
-        logger.info(" Method execution time for {} method is {}", jp.getSignature().getName(), Duration.between(Instant.now(),now).getSeconds());
+        logger.info(" Method execution time for {} method is {}  milliseconds", jp.getSignature().getName(), Duration.between(Instant.now(),now));
         return object;
     }
 

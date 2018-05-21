@@ -38,12 +38,12 @@ public class Panel {
     private String phoneNumber;
     
     @NotEmpty(message="At least one technology must be provided")
-	@NotContainNull(message="Panel Technology list cannot contain null")
+//	@NotContainNull(message="Panel Technology list cannot contain null")
 	@Valid
     private List<String> panelTechnology;
     
     @NotEmpty(message="At least one panelLevel must be provided")
-   	@NotContainNull(message="panelLevel list cannot contain null")
+//   	@NotContainNull(message="panelLevel list cannot contain null")
    	@Valid
     private List<String> panelLevel;
 

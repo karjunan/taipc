@@ -15,6 +15,7 @@ import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 @Path("candidate")
 public class CandidateController {
@@ -30,7 +31,7 @@ public class CandidateController {
     @Loggable
     public void getCandidateDetails(@Suspended AsyncResponse asyncResponse,
                                     @PathParam("id") String id) {
-
+        LOGGER.info("Candidate ID is : {} ", id);
         CompletableFuture<Candidate> future = CompletableFuture.supplyAsync(() -> candidateService.getCandidate(id));
         asyncResponse.resume(future.join());
     }
@@ -39,10 +40,13 @@ public class CandidateController {
     @Path("all")
     @Produces(MediaType.APPLICATION_JSON)
     @Loggable
-    public void getAllCandidateDetails(@Suspended AsyncResponse asyncResponse) {
-
+    public void getAllCandidateDetails(@Suspended AsyncResponse asyncResponse,
+                                       @QueryParam("size") Integer size) {
+        LOGGER.info("Number of elements request is {}", size );
         CompletableFuture<List<Candidate>> future = CompletableFuture.supplyAsync(() -> candidateService.getAll());
-        asyncResponse.resume(future.join());
+        List<Candidate> candidatesList = future.join();
+        asyncResponse.resume(candidatesList.stream().sorted().limit(size)
+                .collect(Collectors.toList()));
     }
 
     @POST

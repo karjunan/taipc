@@ -16,7 +16,7 @@ import javax.validation.constraints.Size;
 
 
 @Document(collection = "candidate")
-public class Candidate {
+public class Candidate implements  Comparable<Candidate>{
 
 
     @Id
@@ -243,5 +243,16 @@ public class Candidate {
     public int hashCode() {
 
         return Objects.hash(getId(), getFirstName(), getLastName(), getMailID(), getPhoneNumber(), getRecruiter(), getPanelList(), getBackupPanelList(), getAppliedDate(), getScheduleDates(), getCreationTime(), getModifiedTime(), getCreatedBy(), getModifiedBy(), getCurrentState(), getPreviousState(), getAppliedRole(), getApprovedRole());
+    }
+
+    @Override
+    public int compareTo(Candidate o) {
+        int val = 0;
+        if(this.getFirstName().equals(o.getFirstName().length()))  {
+            val = 1;
+        } else if(this.getFirstName().equals(o.getFirstName().length())) {
+            val = 2;
+        }
+        return val;
     }
 }
