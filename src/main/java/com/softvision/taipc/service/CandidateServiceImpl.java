@@ -9,7 +9,7 @@ import javax.inject.Inject;
 import java.util.List;
 
 @Component
-public class CandidateServiceImpl implements CandidateService {
+public class CandidateServiceImpl implements CandidateService<Candidate> {
 
     @Inject
     private CandidateRepository candidateRepository;
@@ -22,8 +22,8 @@ public class CandidateServiceImpl implements CandidateService {
 
     @Override
     @Loggable
-    public void addCandidate(Candidate candidate) {
-        candidateRepository.insert(candidate);
+    public Candidate addCandidate(Candidate candidate) {
+       return candidateRepository.insert(candidate);
     }
 
     @Override
@@ -35,7 +35,12 @@ public class CandidateServiceImpl implements CandidateService {
     @Override
     @Loggable
     public void deleteCandidate(String id) {
-        System.out.println("Deleting id " + id);
         candidateRepository.deleteById(id);
+    }
+
+    @Override
+    @Loggable
+    public void deleteAllCandidates() {
+        candidateRepository.deleteAll();
     }
 }

@@ -5,6 +5,7 @@ import com.softvision.taipc.helper.Loggable;
 import com.softvision.taipc.service.CandidateService;
 import com.softvision.taipc.validation.ValidationUtil;
 
+import com.sun.xml.internal.ws.util.CompletedFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,6 +14,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.MediaType;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -41,24 +43,37 @@ public class CandidateController {
     @Produces(MediaType.APPLICATION_JSON)
     @Loggable
     public void getAllCandidateDetails(@Suspended AsyncResponse asyncResponse,
-                                       @QueryParam("size") Integer size) {
-        LOGGER.info("Number of elements request is {}", size );
+                                       @QueryParam("size") Integer size,
+                                       @QueryParam("sort") String sortOrder) {
+
+        LOGGER.info("Number of elements request is {} and sort order is {} ", size,sortOrder );
         CompletableFuture<List<Candidate>> future = CompletableFuture.supplyAsync(() -> candidateService.getAll());
         List<Candidate> candidatesList = future.join();
-        asyncResponse.resume(candidatesList.stream().sorted().limit(size)
-                .collect(Collectors.toList()));
+        if(sortOrder.equals("desc")) {
+            asyncResponse.resume(candidatesList.stream()
+                    .sorted(Comparator.reverseOrder())
+                    .limit(size)
+                    .collect(Collectors.toList()));
+        } else {
+            asyncResponse.resume(candidatesList.stream()
+                    .sorted(Comparator.naturalOrder())
+                    .limit(size)
+                    .collect(Collectors.toList()));
+        }
+
     }
 
     @POST
     @Path("add")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     @Loggable
     public void addCandidate(@Suspended AsyncResponse asyncResponse,
                              Candidate candidate) {
 
     	ValidationUtil.validate(candidate);
-        candidateService.addCandidate(candidate);
-        asyncResponse.resume("Candidate Added");
+        CompletableFuture.supplyAsync( () -> candidateService.addCandidate(candidate))
+                .thenApply(candidate1 -> asyncResponse.resume(candidate));
     }
 
     @DELETE
@@ -67,8 +82,18 @@ public class CandidateController {
     public void deleteCandidate(@Suspended AsyncResponse asyncResponse,
                              @PathParam("id") String id) {
 
-        candidateService.deleteCandidate(id);
-        asyncResponse.resume("Candidate Deleted");
+        LOGGER.info("Deleting candidate {} ", id);
+        CompletableFuture future  = CompletableFuture.runAsync(() -> candidateService.deleteCandidate(id));
+        asyncResponse.resume(future.join());
+    }
+
+    @DELETE
+    @Path("/all")
+    @Loggable
+    public void deleteAllCandidate(@Suspended AsyncResponse asyncResponse) {
+        LOGGER.info(" Deleting All candidates " );
+        CompletableFuture future  = CompletableFuture.runAsync(() -> candidateService.deleteAllCandidates());
+        asyncResponse.resume(future.join());
     }
 
 

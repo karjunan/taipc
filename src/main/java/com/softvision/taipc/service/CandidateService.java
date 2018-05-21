@@ -4,13 +4,15 @@ import com.softvision.taipc.entities.Candidate;
 
 import java.util.List;
 
-public interface CandidateService {
+public interface CandidateService<T extends  Candidate> {
 
-    List<Candidate> getAll();
+    List<T> getAll();
 
-    Candidate getCandidate(String id);
+    T getCandidate(String id);
 
-    void addCandidate(Candidate candidate);
+    T addCandidate(T candidate);
 
     void deleteCandidate(String id);
+
+    void deleteAllCandidates();
 }

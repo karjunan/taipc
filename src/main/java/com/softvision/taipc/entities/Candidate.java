@@ -4,6 +4,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -16,7 +17,7 @@ import javax.validation.constraints.Size;
 
 
 @Document(collection = "candidate")
-public class Candidate implements  Comparable<Candidate>{
+public class Candidate implements Comparable<Candidate> {
 
 
     @Id
@@ -247,11 +248,11 @@ public class Candidate implements  Comparable<Candidate>{
 
     @Override
     public int compareTo(Candidate o) {
-        int val = 0;
-        if(this.getFirstName().equals(o.getFirstName().length()))  {
+        int val = 0 ;
+        if(this.getFirstName().compareTo(o.getFirstName()) == -1 ) {
+            val = -1;
+        } else if( this.getFirstName().compareTo(o.getFirstName()) == 1) {
             val = 1;
-        } else if(this.getFirstName().equals(o.getFirstName().length())) {
-            val = 2;
         }
         return val;
     }
