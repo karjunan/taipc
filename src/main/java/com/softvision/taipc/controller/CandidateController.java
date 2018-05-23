@@ -18,6 +18,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Path("candidate")
 public class CandidateController {
@@ -76,6 +77,21 @@ public class CandidateController {
                 .thenApply(candidate1 -> asyncResponse.resume(candidate));
     }
 
+    @POST
+    @Path("addCandidates")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Loggable
+    public void addListOfCandidate(@Suspended AsyncResponse asyncResponse,
+                             List<Candidate> candidateList) {
+
+
+        List<Candidate> candidates = candidateList.parallelStream()
+                .map(candidate -> candidateService.addCandidate(candidate))
+                .collect(Collectors.toList());
+        asyncResponse.resume(candidates);
+    }
+
     @DELETE
     @Path("/{id}")
     @Loggable
@@ -95,6 +111,7 @@ public class CandidateController {
         CompletableFuture future  = CompletableFuture.runAsync(() -> candidateService.deleteAllCandidates());
         asyncResponse.resume(future.join());
     }
+
 
 
 }
